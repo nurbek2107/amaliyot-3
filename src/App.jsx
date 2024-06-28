@@ -5,9 +5,9 @@ import {
 } from "react-router-dom";
 
 // pages
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import About from "./pages/About";
-import Contact from "./pages/Contact";
+import Contact from "./pages/contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import MainLayout from "./layout/MainLayout";
