@@ -4,16 +4,8 @@ import { Form } from "react-final-form";
 import FormInput from "../components/FormInput";
 import { useLogin } from "../hooks/useLogin";
 
-export const action = async ({ request }) => {
-  let formData = await request.formData();
-  let email = formData.get("email");
-  let password = formData.get("password");
-
-  return { email, password };
-};
-
 function Login() {
-  const { loginWithEmail, signUpWithGoogle } = useLogin();
+  const { signInWithEmail, signInWithGoogle } = useLogin();
   const [error, setError] = useState(null);
 
   const handleLogin = async (values) => {
@@ -25,7 +17,7 @@ function Login() {
     }
 
     try {
-      await loginWithEmail(email, password);
+      await signInWithEmail(email, password);
       // Redirect or other actions upon successful login
     } catch (error) {
       console.error("Login Error:", error);
@@ -41,7 +33,7 @@ function Login() {
 
   const handleGoogleSignIn = async () => {
     try {
-      await signUpWithGoogle();
+      await signInWithGoogle();
       // Redirect or other actions upon successful Google sign-in
     } catch (error) {
       console.error("Google Sign-in Error:", error);
