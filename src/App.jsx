@@ -1,28 +1,51 @@
-import React from "react";
 import "./App.css";
-import { useSelector } from "react-redux";
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
+
+// pages
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import MainLayout from "./layout/MainLayout";
+
+
 
 function App() {
-  const { user, isAuthReady } = useSelector((state) => state.user);
-  const { todos } = useSelector((state) => state.todo); // `todo` olarak düzeltilmiş
+  const routes = createBrowserRouter([
+    {
+      path: "/",
+      element: <MainLayout />,
+      children: [
+        {
+          index: true,
+          element: <Home />,
+        },
+        {
+          path: "/about",
+          element: <About />,
+        },
+        {
+          path: "/contact",
+          element: <Contact />,
+        },
+      ],
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/register",
+      element: <Register />,
+    },
+  ]);
 
-  return (
-    <>
-      <h1>Redux Example</h1>
-      {isAuthReady ? (
-        <div>
-          <h2>Welcome, {user ? user.name : "Guest"}</h2>
-          <ul>
-            {todos.map((todo, index) => (
-              <li key={index}>{todo}</li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
-    </>
-  );
+  return  <RouterProvider router={routes}/>
+  
 }
 
 export default App;
