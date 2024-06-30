@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { onAuthStateChanged } from "firebase/auth";
 
 // Pages
-import Home from "./pages/Home";
+import Home from "./pages/home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import About from "./pages/About";
