@@ -1,22 +1,14 @@
-import React from "react";
-import { createRoot } from "react-dom/client";
-import App from "./App";
-import "./index.css";
-import { Toaster } from "react-hot-toast";
-import { ThemeProvider } from "@material-tailwind/react";
-import store from "./app/store"; // Correctly importing the Redux store
-import { Provider } from "react-redux";
+import ReactDOM from 'react-dom/client'
+import App from './App.jsx'
+import './index.css'
 
-const container = document.getElementById("root");
-const root = createRoot(container);
+import { store } from './store.js'
+import { Provider } from 'react-redux'
 
-root.render(
-  <React.StrictMode>
+import {Toaster} from "react-hot-toast"
+ReactDOM.createRoot(document.getElementById('root')).render(
     <Provider store={store}>
-      <ThemeProvider>
-        <App />
-        <Toaster />
-      </ThemeProvider>
+      <App />
+      <Toaster/>
     </Provider>
-  </React.StrictMode>
-);
+)

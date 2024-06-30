@@ -1,20 +1,18 @@
-// react router dom imports
+//components
+import {Navbar,Footer} from "../components"
+
+//rrd
 import { Outlet } from "react-router-dom";
 
-//components
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-
 function MainLayout() {
-return (
+  return (
     <>
-    <Navbar />
-    <main className="site-container">
+      <Navbar />
+      <main>
         <Outlet />
-    </main>
-    <Footer />
+      </main>
+      <Footer />
     </>
-);
+  );
 }
-
-export default MainLayout;
+export default MainLayout

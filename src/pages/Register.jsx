@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Form, useActionData } from "react-router-dom";
-import { NavLink } from "react-router-dom";
-import FormInput from "../components/FormInput";
-import { useLogin } from "../hooks/useLogin";
+import { Form, useActionData, Link } from "react-router-dom";
+import FormInput from "../components/Forminput";
 import { useRegister } from "../hooks/useRegister";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+import toast from "react-hot-toast";
 
+// Action function to handle form data
 export const action = async ({ request }) => {
   let formData = await request.formData();
   let displayName = formData.get("displayName");
@@ -17,8 +19,7 @@ export const action = async ({ request }) => {
 
 function Register() {
   const infoObj = useActionData();
-  const { registerWithEmailAndPassword } = useRegister();
-  const { signUpWithGoogle } = useLogin();
+  const { registerWithEmail } = useRegister();
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -36,7 +37,12 @@ function Register() {
           return;
         }
 
-        const result = await registerWithEmailAndPassword(infoObj);
+        const result = await registerWithEmail(
+          infoObj.email,
+          infoObj.password,
+          infoObj.displayName,
+          infoObj.photoUrl
+        );
         if (result && result.error) {
           if (result.error.includes("auth/email-already-in-use")) {
             setError(
@@ -52,11 +58,24 @@ function Register() {
       }
     };
     registerUser();
-  }, [infoObj, registerWithEmailAndPassword]);
+  }, [infoObj, registerWithEmail]);
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log(user);
+      toast.success("Google sign-in successful");
+      // Dispatch login action or navigate to the desired page after login
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   return (
-    <div className="mt-5">
-      <div className="flex rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
+    <div className="mt-7">
+      <div className="flex rounded-lg gap-10 shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
         <div
           className="hidden lg:block lg:w-1/2 bg-cover"
           style={{
@@ -65,8 +84,8 @@ function Register() {
           }}
         ></div>
         <div className="w-full p-8 lg:w-1/2">
-          <h2 className="text-2xl font-semibold  text-center">Brand</h2>
-          <p className="text-xl  text-center">Welcome!</p>
+          <h2 className="text-2xl font-semibold text-center">Brand</h2>
+          <p className="text-xl text-center">Welcome!</p>
           <Form method="post">
             {error && (
               <div className="text-red-500 text-center mb-4">{error}</div>
@@ -77,7 +96,7 @@ function Register() {
                 labelText="Display Name:"
                 name="displayName"
               />
-              <FormInput type="url" labelText="photo Url:" name="photoUrl" />
+              <FormInput type="url" labelText="Photo URL:" name="photoUrl" />
             </div>
             <div className="mt-4">
               <FormInput type="email" labelText="Email:" name="email" />
@@ -90,7 +109,7 @@ function Register() {
               />
             </div>
             <button
-              className=" btn btn-active  font-bold py-2 px-4 w-full rounded  mt-8"
+              className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8"
               type="submit"
             >
               Register
@@ -98,8 +117,8 @@ function Register() {
           </Form>
           <button
             type="button"
-            onClick={signUpWithGoogle}
-            className="flex items-center justify-center mt-4  rounded-lg shadow-md btn btn-active w-full  "
+            onClick={handleGoogleSignIn}
+            className="flex items-center justify-center mt-4 rounded-lg shadow-md btn btn-active w-80"
           >
             <svg className="h-6 w-6" viewBox="0 0 40 40">
               <path
@@ -123,12 +142,12 @@ function Register() {
               Sign up with Google
             </span>
           </button>
-          {error && <div className=" text-center mt-4">{error}</div>}
-          <div className="mt-4 flex items-center justify-between">
+          {error && <div className="text-center mt-4">{error}</div>}
+          <div className="mt-4 flex items-center justify-between w-80">
             <span className="border-b w-1/5 md:w-1/4"></span>
-            <NavLink to="/login" className="text-xs text-gray-500 uppercase">
+            <Link to="/login" className="text-xs text-gray-500 uppercase">
               or sign up
-            </NavLink>
+            </Link>
             <span className="border-b w-1/5 md:w-1/4"></span>
           </div>
         </div>

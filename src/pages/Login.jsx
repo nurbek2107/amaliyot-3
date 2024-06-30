@@ -1,113 +1,72 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import { Form } from "react-final-form";
-import FormInput from "../components/FormInput";
+//icons
+import { FcGoogle } from "react-icons/fc";
+//rrd
+import { Form, Link, useActionData } from "react-router-dom";
+//components
+import { FormInput } from "../components";
+
+//hooks
 import { useLogin } from "../hooks/useLogin";
+import { useEffect } from "react";
 
-function Login() {
-  const { signInWithEmail, signInWithGoogle } = useLogin();
-  const [error, setError] = useState(null);
-
-  const handleLogin = async (values) => {
-    const { email, password } = values;
-
-    if (!email) {
-      setError("Email is required.");
-      return;
+export const action = async ({ request }) => {
+  let formData = await request.formData();
+  let email = formData.get("email");
+  let password = formData.get("password");
+  return { email, password };
+};
+function Register() {
+  const userData = useActionData();
+  const { signInWithEmail, isPending } = useLogin();
+  useEffect(() => {
+    if (userData) {
+      signInWithEmail(userData.email,userData.password);
     }
-
-    try {
-      await signInWithEmail(email, password);
-      // Redirect or other actions upon successful login
-    } catch (error) {
-      console.error("Login Error:", error);
-      if (error.code === "auth/user-not-found") {
-        setError("User not found. Please check your credentials.");
-      } else if (error.code === "auth/wrong-password") {
-        setError("Invalid password. Please try again.");
-      } else {
-        setError("Error signing in. Please try again later.");
-      }
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      await signInWithGoogle();
-      // Redirect or other actions upon successful Google sign-in
-    } catch (error) {
-      console.error("Google Sign-in Error:", error);
-      setError("Error signing in with Google. Please try again.");
-    }
-  };
-
+  }, [userData]);
   return (
-    <div className="mt-24">
-      <div className="flex rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-        <div
-          className="hidden lg:block lg:w-1/2 bg-cover"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1546514714-df0ccc50d7bf?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=667&q=80')",
-          }}
-        ></div>
-        <div className="w-full p-8 lg:w-1/2">
-          <h2 className="text-2xl font-semibold text-center">Brand</h2>
-          <p className="text-xl text-center">Welcome back!</p>
-          <Form onSubmit={handleLogin}>
-            {({ handleSubmit }) => (
-              <form onSubmit={handleSubmit} className="mt-4">
-                {error && (
-                  <div className="text-red-500 text-center mb-4">{error}</div>
-                )}
-                <div className="mt-4">
-                  <FormInput
-                    type="email"
-                    labelText="Email:"
-                    name="email"
-                    required
-                  />
-                </div>
-                <div className="mt-4">
-                  <FormInput
-                    type="password"
-                    labelText="Password:"
-                    name="password"
-                    required
-                  />
-                </div>
-                <button
-                  className="btn btn-active font-bold py-2 px-4 w-full rounded mt-8"
-                  type="submit"
-                >
-                  Login
-                </button>
-              </form>
-            )}
-          </Form>
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            className="flex items-center justify-center mt-4 rounded-lg shadow-md btn btn-active w-full"
-          >
-            <svg className="h-6 w-6" viewBox="0 0 40 40">
-              {/* SVG path for Google sign-in button */}
-            </svg>
-            <span className="px-4 py-3 text-center font-bold">
-              Sign in with Google
-            </span>
-          </button>
-          <div className="mt-4 flex items-center justify-between">
-            <span className="border-b w-1/5 md:w-1/4"></span>
-            <Link to="/register" className="text-xs text-gray-500 uppercase">
-              or Register
-            </Link>
-            <span className="border-b w-1/5 md:w-1/4"></span>
-          </div>
+    <div className="min-h-screen grid place-items-center p-4"> 
+      <Form
+        method="post"
+        className="w-96 p-6 border border-gray-500 rounded-lg"
+      >
+        <h2 className="text-2xl font-semibold text-center">Brand</h2>
+        <p className="text-xl text-center">Welcome!</p>
+        <FormInput type="email" name="email" labelText="Email:" />
+        <FormInput type="password" name="password" labelText="Password: " />
+        <div className="mt-6">
+          {!isPending && (
+            <button
+              className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8"
+              type="submit"
+            >
+              Login
+            </button>
+          )}
         </div>
-      </div>
+        <div className="mt-6">
+          {isPending && (
+            <button disabled className="btn btn-secondary btn-block">
+              Loading...
+            </button>
+          )}
+        </div>
+        <button
+          type="button"
+          className="btn btn-active font-bold py-2 px-4 w-80 rounded "
+        >
+          <FcGoogle className="w-5 h-5" />
+          Continue with Google
+        </button>
+        <div className="mt-4 flex items-center justify-between w-80">
+          <span className="border-b w-1/5 md:w-1/4"></span>
+          <Link to="/register" className="text-xs text-gray-500 uppercase">
+            or Register
+          </Link>
+          <span className="border-b w-1/5 md:w-1/4"></span>
+        </div>
+      </Form>
     </div>
   );
 }
 
-export default Login;
+export default Register;
