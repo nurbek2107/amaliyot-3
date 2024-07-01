@@ -4,6 +4,9 @@ import { FcGoogle } from "react-icons/fc";
 import { Form, Link, useActionData } from "react-router-dom";
 //components
 import { FormInput } from "../components";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig"; // Ensure you import your Firebase auth instance
+import { toast } from "react-toastify"; // Ensure you have toast imported and configured
 
 //hooks
 import { useLogin } from "../hooks/useLogin";
@@ -15,14 +18,30 @@ export const action = async ({ request }) => {
   let password = formData.get("password");
   return { email, password };
 };
+
 function Login() {
   const userData = useActionData();
   const { signInWithEmail, isPending } = useLogin();
+
   useEffect(() => {
     if (userData) {
       signInWithEmail(userData.email, userData.password);
     }
-  }, [userData]);
+  }, [userData, signInWithEmail]);
+
+  const handleGoogleSignIn = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log(user);
+      toast.success("Google sign-in successful");
+      // Dispatch login action or navigate to the desired page after login
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
   return (
     <div className="min-h-screen grid place-items-center p-4">
       <Form method="post" className="w-96 p-6 shadow-lg rounded-lg">
@@ -31,7 +50,10 @@ function Login() {
         <FormInput type="password" name="password" labelText="Password: " />
         <div className="mt-6">
           {!isPending && (
-            <button className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8">
+            <button
+              className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8"
+              type="submit"
+            >
               Login
             </button>
           )}
@@ -46,6 +68,7 @@ function Login() {
         <p className="text-center mt-2 decoration decoration-dashed text-lg"></p>
         <button
           type="button"
+          onClick={handleGoogleSignIn}
           className="btn btn-block mt-2 px-4 py-3 text-center font-bold"
         >
           <FcGoogle className="w-5 h-5" />
