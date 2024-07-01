@@ -15,30 +15,23 @@ export const action = async ({ request }) => {
   let password = formData.get("password");
   return { email, password };
 };
-function Register() {
+function Login() {
   const userData = useActionData();
   const { signInWithEmail, isPending } = useLogin();
   useEffect(() => {
     if (userData) {
-      signInWithEmail(userData.email,userData.password);
+      signInWithEmail(userData.email, userData.password);
     }
   }, [userData]);
   return (
-    <div className="min-h-screen grid place-items-center p-4"> 
-      <Form
-        method="post"
-        className="w-96 p-6 border border-gray-500 rounded-lg"
-      >
-        <h2 className="text-2xl font-semibold text-center">Brand</h2>
-        <p className="text-xl text-center">Welcome!</p>
+    <div className="min-h-screen grid place-items-center p-4">
+      <Form method="post" className="w-96 p-6 shadow-lg rounded-lg">
+        <h1 className="text-3xl font-bold text-center mb-4">Login</h1>
         <FormInput type="email" name="email" labelText="Email:" />
         <FormInput type="password" name="password" labelText="Password: " />
         <div className="mt-6">
           {!isPending && (
-            <button
-              className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8"
-              type="submit"
-            >
+            <button className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8">
               Login
             </button>
           )}
@@ -50,9 +43,10 @@ function Register() {
             </button>
           )}
         </div>
+        <p className="text-center mt-2 decoration decoration-dashed text-lg"></p>
         <button
           type="button"
-          className="btn btn-active font-bold py-2 px-4 w-80 rounded "
+          className="btn btn-block mt-2 px-4 py-3 text-center font-bold"
         >
           <FcGoogle className="w-5 h-5" />
           Continue with Google
@@ -60,7 +54,7 @@ function Register() {
         <div className="mt-4 flex items-center justify-between w-80">
           <span className="border-b w-1/5 md:w-1/4"></span>
           <Link to="/register" className="text-xs text-gray-500 uppercase">
-            or Register
+            or sign up
           </Link>
           <span className="border-b w-1/5 md:w-1/4"></span>
         </div>
@@ -69,4 +63,4 @@ function Register() {
   );
 }
 
-export default Register;
+export default Login;
