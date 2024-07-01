@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { logout } from "../app/userSlice"; // Import your logout action
 
 function themeFromLocalStorage() {
-  return localStorage.getItem("theme") || "retro";
+  return localStorage.getItem("theme") || "wireframe";
 }
 
 function Navbar() {
@@ -27,7 +27,7 @@ function Navbar() {
   };
 
   const handleTheme = () => {
-    const newTheme = theme === "retro" ? "dark" : "retro";
+    const newTheme = theme === "wireframe" ? "dark" : "wireframe";
     setTheme(newTheme);
   };
 
@@ -37,7 +37,7 @@ function Navbar() {
   }, [theme]);
 
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-100 w-[1100px] m-auto">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex="0" role="button" className="btn btn-ghost lg:hidden">
@@ -90,9 +90,8 @@ function Navbar() {
       </div>
       <div className="navbar-end">
         <button onClick={handleTheme} className="btn btn-ghost btn-circle">
-          {theme === "retro" ? <IoIosSunny /> : <IoIosMoon />}
+          {theme === "wireframe" ? <IoIosSunny /> : <IoIosMoon />}
         </button>
-        <h1>{}</h1>
         {user ? (
           <div className="dropdown dropdown-end">
             <div className="flex items-center gap-5">
