@@ -11,7 +11,7 @@ const useRegister = () => {
   const registerWithEmail = async (email, password, displayName, photoURL) => {
     setIsPending(true)
     try {
-      const userCredential = createUserWithEmailAndPassword(
+      const userCredential = await  createUserWithEmailAndPassword(
         auth,
         email,
         password

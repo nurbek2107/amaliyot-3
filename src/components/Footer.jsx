@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 function Footer() {
   return (
     <footer className="footer p-10 bg-neutral text-neutral-content mt-20 ">
-      <div className="w-[1100px] m-auto flex justify-between ">
+      <div className="w-[1100px] m-auto flex  justify-between ">
         <nav className="flex flex-col gap-3">
           <h6 className="footer-title">Services</h6>
           <a className="link link-hover">Branding</a>

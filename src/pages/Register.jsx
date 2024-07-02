@@ -19,8 +19,8 @@ export const action = async ({ request }) => {
 
 function Register() {
   const infoObj = useActionData();
-  const { registerWithEmail } = useRegister();
   const [error, setError] = useState(null);
+  const { registerWithEmail, isPending } = useRegister();
 
   useEffect(() => {
     const registerUser = async () => {
@@ -43,7 +43,8 @@ function Register() {
           infoObj.displayName,
           infoObj.photoUrl
         );
-        if (result && result.error) {
+
+        if (result?.error) {
           if (result.error.includes("auth/email-already-in-use")) {
             setError(
               "This email is already registered. Please use a different email."
@@ -108,12 +109,23 @@ function Register() {
                 name="password"
               />
             </div>
-            <button
-              className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8"
-              type="submit"
-            >
-              Register
-            </button>
+            <div className="mt-6">
+              {!isPending && (
+                <button className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8">
+                  Register
+                </button>
+              )}
+            </div>
+            <div className="mt-6">
+              {isPending && (
+                <button
+                  disabled
+                  className="btn btn-active font-bold py-2 px-4 w-80 rounded mt-8"
+                >
+                  Loading...
+                </button>
+              )}
+            </div>
           </Form>
           <button
             type="button"

@@ -1,4 +1,4 @@
-import { signInWithEmailAndPassword} from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 
 import { login } from "../app/userSlice";
@@ -11,7 +11,7 @@ const useLogin = () => {
   const signInWithEmail = async (email, password) => {
     setIsPending(true);
     try {
-      const userCredential = signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       dispatch(login(user));
       toast.success("Welcome back");
