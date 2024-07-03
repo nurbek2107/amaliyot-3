@@ -26,6 +26,7 @@ import ProtectedRoutes from "./components/ProtectedRoutes";
 // Redux actions
 import { auth } from "./firebase/firebaseConfig";
 import { login, isAuthChange } from "./app/userSlice";
+import { action as HomeAction } from "./pages/home";
 
 function App() {
   const dispatch = useDispatch();
@@ -43,13 +44,14 @@ function App() {
         {
           index: true,
           element: <Home />,
+          action: HomeAction,
         },
         {
-          path: "/about",
+          path: "about",
           element: <About />,
         },
         {
-          path: "/contact",
+          path: "contact",
           element: <Contact />,
         },
       ],
