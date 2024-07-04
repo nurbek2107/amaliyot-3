@@ -3,10 +3,10 @@ import { useCollection } from "../hooks/useCollection";
 import FormInput from "../components/FormInput"; // Make sure to adjust the import path if necessary
 import { Form, useActionData } from "react-router-dom";
 import { useEffect } from "react";
-import { collection, addDoc, doc, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, doc, deleteDoc ,serverTimestamp} from "firebase/firestore";
 import { db } from "../firebase/firebaseConfig";
 import toast from "react-hot-toast";
-
+import "./home.css";
 export const action = async ({ request }) => {
   let formData = await request.formData();
   let title = formData.get("title");
@@ -20,7 +20,7 @@ export const action = async ({ request }) => {
 
 function Home() {
   const { user } = useSelector((state) => state.user);
-  const { data: todos } = useCollection("todos", ["uid", "==", user.uid]);
+  const { data: todos } = useCollection("todos", ["uid", "==", user.uid] , ["createAt"]);
   const userData = useActionData();
 
   useEffect(() => {
@@ -28,13 +28,13 @@ function Home() {
       const newDoc = {
         ...userData,
         uid: user.uid,
+        createAt: serverTimestamp()
       };
       addDoc(collection(db, "todos"), newDoc).then(() => {
         toast.success("Successfully Added");
       });
     }
   }, [userData]);
-
   const deleteDocument = (id) => {
     deleteDoc(doc(db, "todos", id)).then(() => {
       toast.success("Deleted");
@@ -62,35 +62,40 @@ function Home() {
             </div>
           </Form>
         </div>
+
         <div>
-          {todos &&
-            todos.map((todo) => (
-              <div
-                className="flex gap-4 items-center  justify-between p-5 shadow-xl"
-                key={todo.id}
-              >
-                <div>
-                  <h3 className="text-3xl">{todo.title}</h3>
-                  <p className="text-xl">
-                    {" "}
-                    <span className="text-slate-600"> Age:</span> {todo.age}
-                  </p>
-                  <p className="text-xl">
-                    <span className="text-slate-600"> Family Name:</span>{" "}
-                    {todo.familyName}
-                  </p>
-                  <p className="text-xl">
-                    <span className="text-slate-600"> Email:</span> {todo.email}
-                  </p>
-                </div>
-                <button
-                  onClick={() => deleteDocument(todo.id)}
-                  className="btn btn-primary btn-sm"
+          <h1 className="text-center mt-10">list</h1>
+          <div className=" owerflov_1  h-[500px] mt-5 ">
+            {todos &&
+              todos.reverse().map((todo) => (
+                <div
+                  className="flex gap-4 items-center  justify-between p-5 shadow-xl"
+                  key={todo.id}
                 >
-                  Delete
-                </button>
-              </div>
-            ))}
+                  <div>
+                    <h3 className="text-3xl">{todo.title}</h3>
+                    <p className="text-xl">
+                      {" "}
+                      <span className="text-slate-600"> Age:</span> {todo.age}
+                    </p>
+                    <p className="text-xl">
+                      <span className="text-slate-600"> Family Name:</span>{" "}
+                      {todo.familyName}
+                    </p>
+                    <p className="text-xl">
+                      <span className="text-slate-600"> Email:</span>{" "}
+                      {todo.email}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => deleteDocument(todo.id)}
+                    className="btn btn-primary btn-sm"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>
