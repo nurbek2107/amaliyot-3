@@ -3,6 +3,7 @@ import FormInput from "../components/FormInput";
 
 const EditModal = ({ isOpen, onClose, onSave, todo }) => {
   const [formData, setFormData] = useState({
+    id: "",
     title: "",
     age: "",
     familyName: "",
@@ -33,9 +34,9 @@ const EditModal = ({ isOpen, onClose, onSave, todo }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex items-center justify-center z-10">
-      <div className=" p-8 rounded shadow-lg w-96 bg-base-100 ">
+      <div className="p-8 rounded shadow-lg w-96 bg-base-100">
         <h2 className="text-2xl mb-4">Edit Todo</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-80">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <FormInput
             type="text"
             labelText="Title"
