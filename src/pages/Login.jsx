@@ -1,5 +1,6 @@
 //icons
 import { FcGoogle } from "react-icons/fc";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"; // Import icons for visibility toggle
 //rrd
 import { Form, Link, useActionData } from "react-router-dom";
 //components
@@ -24,13 +25,21 @@ export const action = async ({ request }) => {
 
 function Login() {
   const [forgetPassword, setForgetPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
   const userData = useActionData();
   const { signInWithEmail, isPending } = useLogin();
 
   useEffect(() => {
     if (userData) {
       if (!forgetPassword) {
-        signInWithEmail(userData.email, userData.password);
+        if (validatePassword(userData.password)) {
+          signInWithEmail(userData.email, userData.password);
+        } else {
+          setPasswordError(
+            "Password must be at least 6 characters long and contain a number."
+          );
+        }
       } else {
         sendPasswordResetEmail(auth, userData.email.trim())
           .then(() => {
@@ -56,13 +65,38 @@ function Login() {
     }
   };
 
+  const validatePassword = (password) => {
+    const passwordRegex = /^(?=.*[0-9]).{6,}$/;
+    return passwordRegex.test(password);
+  };
+
   return (
     <div className="min-h-screen grid place-items-center p-4">
       <Form method="post" className="w-96 p-6 shadow-lg rounded-lg">
         <h1 className="text-3xl font-bold text-center mb-4">Login</h1>
         <FormInput type="email" name="email" labelText="Email:" />
         {!forgetPassword && (
-          <FormInput type="password" name="password" labelText="Password:" />
+          <div className="relative">
+            <FormInput
+              type={showPassword ? "text" : "password"}
+              name="password"
+              labelText="Password:"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-8 top-[52px] "
+            >
+              {showPassword ? (
+                <AiOutlineEyeInvisible className="w-5 h-5" />
+              ) : (
+                <AiOutlineEye className="w-5 h-5" />
+              )}
+            </button>
+            {passwordError && (
+              <p className="text-red-500 text-xs mt-1">{passwordError}</p>
+            )}
+          </div>
         )}
         <div className="mt-6">
           {!isPending && (
@@ -96,7 +130,7 @@ function Login() {
           </Link>
           <span className="border-b w-1/5 md:w-1/4"></span>
         </div>
-        <div className="text-end">
+        <div className="text-center mt-5">
           <Link
             onClick={() => setForgetPassword(!forgetPassword)}
             type="btn"

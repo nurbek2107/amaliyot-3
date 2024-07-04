@@ -5,6 +5,7 @@ import { useRegister } from "../hooks/useRegister";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 import toast from "react-hot-toast";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 // Action function to handle form data
 export const action = async ({ request }) => {
@@ -20,6 +21,7 @@ export const action = async ({ request }) => {
 function Register() {
   const infoObj = useActionData();
   const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); // State for toggling password visibility
   const { registerWithEmail, isPending } = useRegister();
 
   useEffect(() => {
@@ -102,12 +104,23 @@ function Register() {
             <div className="mt-4">
               <FormInput type="email" labelText="Email:" name="email" />
             </div>
-            <div className="mt-4">
+            <div className="relative mt-4">
               <FormInput
-                type="password"
-                labelText="Password:"
+                type={showPassword ? "text" : "password"}
                 name="password"
+                labelText="Password:"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-14 top-[50px]"
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible className="w-5 h-5" />
+                ) : (
+                  <AiOutlineEye className="w-5 h-5" />
+                )}
+              </button>
             </div>
             <div className="mt-6">
               {!isPending && (
